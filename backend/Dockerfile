@@ -1,0 +1,16 @@
+FROM openjdk:16-alpine3.13
+
+
+WORKDIR /jp
+
+COPY .mvn/ .mvn
+
+COPY mvnw pom.xml ./
+
+RUN chmod +x ./mvnw && ./mvnw dependency:go-offline
+
+COPY src ./src
+
+
+CMD ["./mvnw", "spring-boot:run"]
+
