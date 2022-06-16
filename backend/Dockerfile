@@ -1,16 +1,17 @@
+FROM 3.8.6-eclipse-temurin-8-alpine AS build
+
+WORKDIR /app 
+
+COPY . .
+
+RUN mvn -f /app/pom.xml clean package -DskipTest=true
+
 FROM openjdk:16-alpine3.13
 
+WORKDIR: /jp
 
-WORKDIR /jp
+COPY --from=build /app/target/studentsystem-0.0.1-SNAPSHOT.jar /jp/java.jar
 
-COPY .mvn/ .mvn
+EXPOSE: 8080
 
-COPY mvnw pom.xml ./
-
-RUN chmod +x ./mvnw && ./mvnw dependency:go-offline
-
-COPY src ./src
-
-
-CMD ["./mvnw", "spring-boot:run"]
-
+CMD ["java","-jar","/jp/java.jar"]

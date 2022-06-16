@@ -1,12 +1,21 @@
-FROM node:lts-alpine
+
+# syntax=docker/dockerfile:1
+
+FROM node:lts-alpine AS builder
 
 WORKDIR  /jp
 
-COPY . .
+COPY package*.json /app/
 
 RUN npm i
 
-EXPOSE 3000
+COPY . .
 
-CMD ["npm","run", "start"]
+RUN npm run build
+
+FROM nginx:1.21.6-alpine
+
+COPY --from=builder /jp/build /usr/share/nginx/html
+
+
 
