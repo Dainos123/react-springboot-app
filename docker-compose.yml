@@ -3,7 +3,6 @@ version: '3.8'
 services:
 
   back:
-    container_name: back
     build:
       context: ..
       dockerfile: ./backend/Dockerfile
@@ -16,7 +15,6 @@ services:
     env_file: env.default
 
   front:
-    container_name: front
     build:
       context: ..
       dockerfile: ./frontend/Dockerfile
@@ -24,7 +22,7 @@ services:
     image: java-frontend:latest
     env_file: env.default
     depends_on: 
-      - back
+      - back  
     network:
       - def
       

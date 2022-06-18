@@ -1,17 +1,20 @@
-FROM 3.8.6-eclipse-temurin-8-alpine AS build
+FROM maven:3.8.6-eclipse-temurin-17-alpine AS build
 
-WORKDIR /app 
+WORKDIR /build
 
 COPY . .
 
-RUN mvn -f /app/pom.xml clean package -DskipTest=true
+RUN mvn clean package -DskipTests=true 
+
+
 
 FROM openjdk:16-alpine3.13
 
-WORKDIR: /jp
+WORKDIR /jvm
 
-COPY --from=build /app/target/studentsystem-0.0.1-SNAPSHOT.jar /jp/java.jar
+COPY --from=build /build/target/studentsystem-0.0.1-SNAPSHOT.jar /jvm/java.jar
 
-EXPOSE: 8080
+EXPOSE 8080
 
-CMD ["java","-jar","/jp/java.jar"]
+CMD ["java","-jar","/jvm/java.jar"]
+
