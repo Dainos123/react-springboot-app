@@ -1,42 +1,34 @@
 version: '3.8'
 
 services:
-
   back:
-    build:
-      context: ..
-      dockerfile: ./backend/Dockerfile
-    image: java-backend:latest
+    image: java_backend:latest
+    build: ./backend/
     networks:
       - def
     depends_on:
       - database
     restart: unless-stopped
-    env_file: env.default
-
+    
   front:
-    build:
-      context: ..
-      dockerfile: ./frontend/Dockerfile
+    image: node-frontend:latest
+    build: ./frontend/
     restart: unless-stopped
-    image: java-frontend:latest
-    env_file: env.default
     depends_on: 
       - back  
-    network:
+    networks:
       - def
       
   database:
-    image: dbsql:${DB_IMAGE}
+    image: mysql:${DB_IMAGE}
     restart: unless-stopped
-    env_file: env.default
+    env_file: .env
     networks: 
       - def
     volumes:
-      - dbsql:/var/lib/mysql 
+      - mysql:/var/lib/mysql 
       
   nginx:
-    container_name: nginx  
     image: nginx:${NGINX_IMAGE}
     restart: unless-stopped
     networks: 
@@ -46,17 +38,15 @@ services:
       - "80:80"
     volumes: 
       - ./nginx:/etc/nginx/conf.d
-    env_file: env.default 
+    env_file: .env
     depends_on:
       - frontend   
       - backend  
 
-  network:
-    def:
+networks:
+   def:
       driver: bridge
-      name: def
 
-  volumes:
-    dbsql:
-      name: dbsql
-
+volumes: 
+  mysql:
+    name: dbsql
