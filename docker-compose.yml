@@ -27,7 +27,12 @@ services:
       - def
     volumes:
       - mysql:/var/lib/mysql 
-      
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: one
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+
   nginx:
     image: nginx:${NGINX_IMAGE}
     restart: unless-stopped
